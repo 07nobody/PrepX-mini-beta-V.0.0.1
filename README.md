@@ -45,14 +45,7 @@ prepx/
 │   │   ├── services/        # API services
 │   │   ├── utils/           # Utility functions
 │   │   ├── contexts/        # React contexts
-│   │   └── styles/          # Global styles and theme
-│   └── backend/             # Express.js API server
-│       ├── controllers/     # Request handlers
-│       ├── models/          # Data models
-│       ├── routes/          # API routes
-│       ├── middleware/      # Express middleware
-│       ├── services/        # Business logic
-│       └── utils/           # Utility functions
+│   └── styles/              # Global styles and theme
 │
 └── question-generator/      # AI-powered question generation system
     ├── src/
@@ -205,6 +198,8 @@ POST   /api/question-gen/v1/generate         # Generate new questions
 GET    /api/question-gen/v1/questions        # List questions
 PUT    /api/question-gen/v1/questions/:id    # Update a question
 POST   /api/question-gen/v1/validate         # Validate a question
+POST   /api/question-gen/v1/report           # Report an issue with a question
+POST   /api/question-gen/v1/review           # Review and approve a question
 ```
 
 ## 🔄 State Management
@@ -444,6 +439,47 @@ describe('Button component', () => {
 ```bash
 # Run Cypress tests
 npm run test:e2e
+```
+
+### Automated Validation Tests
+```bash
+# Run validation tests
+npm run test:validation
+```
+
+Example validation test:
+
+```javascript
+// validation/questionValidation.test.js
+import { validateQuestion } from './questionValidation';
+
+describe('Question Validation', () => {
+  it('validates a question with correct structure', () => {
+    const question = {
+      text: 'What is the capital of France?',
+      options: ['Paris', 'London', 'Berlin', 'Madrid'],
+      correctAnswer: 'Paris',
+      category: 'Geography',
+      difficulty: 'easy',
+    };
+    const result = validateQuestion(question);
+    expect(result.isValid).toBe(true);
+  });
+
+  it('fails validation for a question with missing text', () => {
+    const question = {
+      options: ['Paris', 'London', 'Berlin', 'Madrid'],
+      correctAnswer: 'Paris',
+      category: 'Geography',
+      difficulty: 'easy',
+    };
+    const result = validateQuestion(question);
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toContain('Question text is required');
+  });
+
+  // Add more validation tests as needed
+});
 ```
 
 ## 🚀 Deployment
